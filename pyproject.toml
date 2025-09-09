@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "external-request-logger"
+version = "1.0.2"
+description = ""
+authors = ["Pavel Merkulov <merkulov0pavel@gmail.com>"]
+packages = [{include = "external_request"}]
+
+[tool.poetry.dependencies]
+python = ">=3.8.5"
+django = ">=4.0.0"
+djangorestframework = ">=3.9.0"
+python-dateutil = ">=2.8"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
