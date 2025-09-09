@@ -21,15 +21,33 @@ class WeekListFilter(admin.SimpleListFilter):
     parameter_name = "week"
 
     def lookups(self, request, model_admin):
-        qs = model_admin.get_queryset(request)
-        dates = qs.dates("request_timestamp", "week", order="DESC")
-        lookups = []
-        for d in dates:
-            week_start = d
-            week_end = d + timedelta(days=6)
-            label = f"{week_start.strftime('%d.%m.%Y')} – {week_end.strftime('%d.%m.%Y')}"
-            lookups.append((week_start.isoformat(), label))
-        return lookups
+        # 1) один запрос: только самая поздняя request_timestamp
+        last_ts = (
+            model_admin.get_queryset(request)
+            .order_by("request_timestamp")
+            .values_list("request_timestamp", flat=True)
+            .first()
+        )
+        if not last_ts:
+            return []
+
+        # 2) переводим в локальную дату
+        last_date = timezone.localdate(last_ts)
+
+        # 3) старт/финиш интервала по неделям
+        ws_today = week_start_for(timezone.localdate())
+        ws_last  = week_start_for(last_date)
+
+        # 4) строим непрерывные недели от сегодня до последней с данными
+        items = []
+        ws = ws_today
+        while ws >= ws_last:
+            we = ws + timedelta(days=6)
+            label = f"{ws:%d.%m.%Y} – {we:%d.%m.%Y}"
+            items.append((ws.isoformat(), label))
+            ws -= timedelta(weeks=1)
+
+        return items
 
     def queryset(self, request, queryset):
         if self.value():
