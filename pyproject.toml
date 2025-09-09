@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "external-request-logger"
-version = "1.0.3"
+version = "1.0.4"
 description = ""
 authors = ["Pavel Merkulov <merkulov0pavel@gmail.com>"]
 packages = [{include = "external_request"}]

@@ -15,14 +15,14 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         days = options.get("days")
         if days is None:
-            days = getattr(settings, "REQUESTS_LOGGER", {}).get("FLUSH_DAYS", 14)
+            days = getattr(settings, "EXTERNAL_REQUEST_LOGS", {}).get("FLUSH_DAYS", 14)
 
-        deleted_request_records = (
+        deleted_records = (
             self.get_request_log_record_queryset_to_delete()
             .filter(request_timestamp__lte=timezone.now() - timezone.timedelta(days=days))
             .delete()
         )
-        self.stdout.write(f"Удалено записей изменений {deleted_request_records[0]}")
+        self.stdout.write(f"Удалено записей изменений {deleted_records[0]}")
 
     @classmethod
     def get_request_log_record_queryset_to_delete(cls) -> QuerySet:
