@@ -130,12 +130,12 @@ class RequestLogService:
         return {
             "request_payload": json.dumps(
                 RequestLogService.mask_attrs(attrs_to_mask, request_payload), ensure_ascii=False
-            ) if request_query_params else {},
+            ) if request_payload else {},
             "request_url": url,
             "request_method": method,
             "request_headers": json.dumps(
                 RequestLogService.mask_attrs(attrs_to_mask, request_headers), ensure_ascii=False
-            ) if request_query_params else {},
+            ) if request_headers else {},
             "request_timestamp": datetime.datetime.now(),
             "request_query_params": json.dumps(
                 RequestLogService.mask_attrs(attrs_to_mask, request_query_params), ensure_ascii=False
