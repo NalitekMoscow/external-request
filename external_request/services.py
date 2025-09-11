@@ -122,22 +122,22 @@ class RequestLogService:
     def default_log_request_data(
         url: str,
         method: str,
-        attrs_to_mask: tuple,
-        request_payload: dict,
-        request_headers: dict,
-        request_query_params: dict,
+        attrs_to_mask: tuple = (),
+        request_payload: dict = None,
+        request_headers: dict = None,
+        request_query_params: dict = None,
     ) -> dict:
         return {
             "request_payload": json.dumps(
                 RequestLogService.mask_attrs(attrs_to_mask, request_payload), ensure_ascii=False
-            ),
+            ) if request_query_params else {},
             "request_url": url,
             "request_method": method,
             "request_headers": json.dumps(
                 RequestLogService.mask_attrs(attrs_to_mask, request_headers), ensure_ascii=False
-            ),
+            ) if request_query_params else {},
             "request_timestamp": datetime.datetime.now(),
             "request_query_params": json.dumps(
                 RequestLogService.mask_attrs(attrs_to_mask, request_query_params), ensure_ascii=False
-            ),
+            ) if request_query_params else {},
         }
